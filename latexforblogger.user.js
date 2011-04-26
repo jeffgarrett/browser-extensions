@@ -11,6 +11,17 @@
 
 function latexify()
 {
+    function create_img(eq)
+    {
+        var img = document.createElement('img');
+        img.setAttribute('src', 'http://latex.codecogs.com/gif.latex?'+eq);
+        img.setAttribute('alt', eq);
+        img.setAttribute('align', 'middle');
+        img.setAttribute('border', 0);
+
+        return img;
+    }
+
     var rich_edit = document.getElementById("richeditorframe");
     var rich_body = rich_edit.contentDocument.getElementsByTagName("body");
     var contenu = rich_body[0].innerHTML;
@@ -22,7 +33,7 @@ function latexify()
         contenu = contenu.substring(0,fin) + contenu.substring(fin+2,contenu.length);
         var latex_eq = contenu.substring(debut,fin);
         rich_body[0].innerHTML = contenu.substring(0,debut);
-        rich_body[0].innerHTML+="<img src=\"http://latex.codecogs.com/gif.latex?"+latex_eq+"\" alt=\""+latex_eq+"\" align=\"middle\" border=\"0\" />";
+        rich_body[0].appendChild(create_img(latex_eq));
         rich_body[0].innerHTML+= contenu.substring(fin,contenu.length);
         contenu = rich_body[0].innerHTML;
     }
@@ -32,21 +43,20 @@ function delatexify()
 {
     var rich_edit = document.getElementById("richeditorframe");
     var rich_body = rich_edit.contentDocument.getElementsByTagName("body");
-    var contenu = rich_body[0].innerHTML;
+    var imgs = rich_body[0].getElementsByTagName("img");
 
-    while (contenu.indexOf("<img src=\"http://latex.codecogs.com/gif.latex?") != -1)
+    for (var i = 0; i < imgs.length; i++)
     {
-        var idx = contenu.indexOf("<img src=\"http://latex.codecogs.com/gif.latex?");
-        var initial = contenu.substring(0,idx);
-        var next = contenu.substring(idx+46,contenu.length);
-        idx = next.indexOf(" alt=\"");
-        next = next.substring(idx+6, next.length);
-        idx = next.indexOf("\"");
-        var latex_eq = next.substring(0,idx);
-        idx = next.indexOf("align=\"middle\" border=\"0\">");
-        var final = next.substring(idx+26, next.length);
-        contenu = initial + "$$" + latex_eq + "$$" + final;
-        rich_body[0].innerHTML = contenu;
+        if (imgs[i].src.indexOf("http://latex.codecogs.com/gif.latex?") == 0)
+        {
+            // Replace the image with its alt text
+            var fragment= document.createDocumentFragment();
+            var txt = document.createTextNode("$$" + imgs[i].alt + "$$");
+            fragment.appendChild(txt);
+
+            imgs[i].parentNode.replaceChild(fragment, imgs[i]);
+            i--;
+        }
     }
 }
 
