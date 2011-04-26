@@ -1,18 +1,5 @@
 // Created by Wolverinex02 (http://wolverinex02.blogspot.com/) 
-// modified:  changed forkosh.com to codecogs.com
-//            changed the button to use codecogs
-//            cleaned up/formatted code a bit
-//            added an unLaTeX button,  FIXME:  make it work
-//
-//            kept the french naming confention
-
-// FEATURES
-// Works only in Compose modes
-// transform latex equation between '$$' in LaTeX pics by using http://latex.codecogs.com
-// This script works thanks the excellent site: http://latex.codecogs.com
-
-// TODO
-// modify the script to undo the transformation
+// Heavily modified by jgarrett (http://blog.jgarrett.org/)
 
 // ==UserScript==
 // @name           LaTeX for Blogger
