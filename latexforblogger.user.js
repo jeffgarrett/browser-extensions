@@ -14,8 +14,17 @@ function latexify()
     function create_img(eq)
     {
         var img = document.createElement('img');
-        img.setAttribute('src', 'http://latex.codecogs.com/gif.latex?'+encodeURIComponent(eq));
-        img.setAttribute('alt', eq);
+
+        // undo some blogger substitutions
+        mangled_eq = eq;
+        mangled_eq = mangled_eq.replace(/&lt;/g, '<');
+        mangled_eq = mangled_eq.replace(/&gt;/g, '>');
+        mangled_eq = mangled_eq.replace(/&amp;/g, '&');
+
+	alert(mangled_eq);
+
+        img.setAttribute('src', 'http://latex.codecogs.com/gif.latex?'+encodeURIComponent(mangled_eq));
+        img.setAttribute('alt', mangled_eq);
         img.setAttribute('align', 'middle');
         img.setAttribute('border', 0);
 
@@ -179,7 +188,7 @@ function addLaTeXButtons(e)
         var holder = document.getElementsByClassName('editorHolder')[0];
         holder.setAttribute('style', 'width: 710px;');
 
-	editbar = editbar.firstChild;
+        editbar = editbar.firstChild;
         editbar.appendChild(newSeparator());
         editbar.appendChild(newLaTeXButton("LaTeX", "http://latex.codecogs.com/gif.latex?x^2", 'latexify'));
         editbar.appendChild(newLaTeXButton("unLaTeX", "http://latex.codecogs.com/gif.latex?\\not\\!{x^2}", 'delatexify'));
