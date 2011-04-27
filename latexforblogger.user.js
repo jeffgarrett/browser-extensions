@@ -22,9 +22,13 @@ function latexify()
         return img;
     }
 
-    var rich_edit = document.getElementById("richeditorframe");
-    var rich_body = rich_edit.contentDocument.getElementsByTagName("body");
-    var contenu = rich_body[0].innerHTML;
+    var rich_edit = document.getElementById('postingComposeBox');
+    // old editor?
+    if (!rich_edit)
+        rich_edit = document.getElementById("richeditorframe");
+
+    var rich_body = rich_edit.contentDocument.getElementsByTagName("body")[0];
+    var contenu = rich_body.innerHTML;
 
     while (contenu.indexOf("$$") != -1)
     {
@@ -32,18 +36,22 @@ function latexify()
         contenu = contenu.substring(0,debut) + contenu.substring(debut+2,contenu.length); var fin = contenu.indexOf("$$");
         contenu = contenu.substring(0,fin) + contenu.substring(fin+2,contenu.length);
         var latex_eq = contenu.substring(debut,fin);
-        rich_body[0].innerHTML = contenu.substring(0,debut);
-        rich_body[0].appendChild(create_img(latex_eq));
-        rich_body[0].innerHTML+= contenu.substring(fin,contenu.length);
-        contenu = rich_body[0].innerHTML;
+        rich_body.innerHTML = contenu.substring(0,debut);
+        rich_body.appendChild(create_img(latex_eq));
+        rich_body.innerHTML+= contenu.substring(fin,contenu.length);
+        contenu = rich_body.innerHTML;
     }
 }
 
 function delatexify()
 {
-    var rich_edit = document.getElementById("richeditorframe");
-    var rich_body = rich_edit.contentDocument.getElementsByTagName("body");
-    var imgs = rich_body[0].getElementsByTagName("img");
+    var rich_edit = document.getElementById('postingComposeBox');
+    // old editor?
+    if (!rich_edit)
+        rich_edit = document.getElementById("richeditorframe");
+    var rich_body = rich_edit.contentDocument.getElementsByTagName("body")[0];
+
+    var imgs = rich_body.getElementsByTagName("img");
 
     for (var i = 0; i < imgs.length; i++)
     {
@@ -110,14 +118,73 @@ function separator()
     return div;
 }
 
+function newSeparator()
+{
+    var div = document.createElement('div');
+    div.setAttribute('id', ':p');
+    div.setAttribute('style', '-webkit-user-select: none;');
+    div.setAttribute('class', 'goog-toolbar-separator goog-inline-block');
+    div.setAttribute('role', 'separator');
+
+    div.innerHTML = '.';
+
+    return div;
+}
+
+function newLaTeXButton(name, url, cbname)
+{
+    var div = document.createElement('div');
+    div.setAttribute('class', 'goog-inline-block goog-toolbar-button goog-toolbar-button-hover');
+    div.setAttribute('title', name); 
+    div.setAttribute('role', 'button');
+    div.setAttribute('style', '-webkit-user-select: none;');
+    div.setAttribute('id', name);
+    div.setAttribute('aria-pressed', 'false');
+
+    var outerdiv = document.createElement('div');
+    div.setAttribute('class', 'goog-inline-block goog-toolbar-button-outer-box');
+    div.setAttribute('style', '-webkit-user-select: none;');
+
+    var innerdiv = document.createElement('div');
+    div.setAttribute('class', 'goog-inline-block goog-toolbar-button-inner-box');
+    div.setAttribute('style', '-webkit-user-select: none;');
+
+    var img = document.createElement('img');
+    img.setAttribute('style', '-webkit-user-select: none;');
+    img.setAttribute('src', url);
+    img.setAttribute('alt', name);
+    img.setAttribute('border', 0);
+    img.setAttribute('onmousedown', cbname+'();', false);
+
+    innerdiv.appendChild(img);
+    outerdiv.appendChild(innerdiv);
+    div.appendChild(outerdiv);
+
+    return div;
+}
+
 function addLaTeXButtons(e)
 {
+    // old editor
     var editbar = document.getElementById("formatbar");
     if (editbar) {
-        editbar.appendChild(LaTeXButton("Latex", "http://latex.codecogs.com/gif.latex?\\LaTeX", 'latexify'));
+        editbar.appendChild(LaTeXButton("LaTeX", "http://latex.codecogs.com/gif.latex?\\LaTeX", 'latexify'));
         editbar.appendChild(LaTeXButton("unLaTeX", "http://latex.codecogs.com/gif.latex?{\\rm un}\\LaTeX", 'delatexify'));
         editbar.appendChild(separator());
     }
+
+    // new editor
+    var editbar = document.getElementById("postingComposeToolbar");
+    if (editbar) {
+        var holder = document.getElementsByClassName('editorHolder')[0];
+        holder.setAttribute('style', 'width: 710px;');
+
+	editbar = editbar.firstChild;
+        editbar.appendChild(newSeparator());
+        editbar.appendChild(newLaTeXButton("LaTeX", "http://latex.codecogs.com/gif.latex?x^2", 'latexify'));
+        editbar.appendChild(newLaTeXButton("unLaTeX", "http://latex.codecogs.com/gif.latex?\\not\\!{x^2}", 'delatexify'));
+    }
+
 
     // export the callbacks
     defineFunction("latexify", latexify);
