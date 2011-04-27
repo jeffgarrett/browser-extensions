@@ -14,7 +14,7 @@ function latexify()
     function create_img(eq)
     {
         var img = document.createElement('img');
-        img.setAttribute('src', 'http://latex.codecogs.com/gif.latex?'+eq);
+        img.setAttribute('src', 'http://latex.codecogs.com/gif.latex?'+encodeURIComponent(eq));
         img.setAttribute('alt', eq);
         img.setAttribute('align', 'middle');
         img.setAttribute('border', 0);
