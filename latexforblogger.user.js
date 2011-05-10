@@ -21,8 +21,6 @@ function latexify()
         mangled_eq = mangled_eq.replace(/&gt;/g, '>');
         mangled_eq = mangled_eq.replace(/&amp;/g, '&');
 
-	alert(mangled_eq);
-
         img.setAttribute('src', 'http://latex.codecogs.com/gif.latex?'+encodeURIComponent(mangled_eq));
         img.setAttribute('alt', mangled_eq);
         img.setAttribute('align', 'middle');
